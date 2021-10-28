@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 import 'font-awesome/css/font-awesome.min.css'
 import { connect } from 'react-redux'
 import { changeProductQuantity } from '../actions'
@@ -16,6 +17,8 @@ const Name = styled.h1`
     margin-bottom: 16px;
     font-size: 30px;
     font-weight: 600;
+    color: black;
+    text-decoration: none;
 `
 
 const Category = styled.h1`
@@ -157,7 +160,9 @@ class CartItemContainer extends React.Component {
         return (
             <Wrapper>
                 <Details>
-                    <Name>{product.name}</Name>
+                    <Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>
+                        <Name>{product.name}</Name>
+                    </Link>
                     <Category>{product.category}</Category>
                     <Price>
                         {product.prices.map(price => {
