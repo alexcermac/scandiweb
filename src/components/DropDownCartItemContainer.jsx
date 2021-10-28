@@ -14,11 +14,13 @@ const Details = styled.div`
 `
 
 const Name = styled.h4`
-    margin-bottom: 16px;
+    margin: 0;
+    margin-bottom: 5px;
     font-weight: 300;
 `
 
 const Category = styled.h4`
+    margin: 0;
     font-weight: 300;
 `
 
