@@ -1,9 +1,8 @@
 import React from 'react'
-import { match } from 'react-router'
 import styled from 'styled-components'
 import { graphql } from 'react-apollo'
 import { LOAD_PRODUCT_DETAILS } from '../GraphQL/Queries'
-import { delay, flowRight as compose, lowerFirst } from 'lodash'
+import { flowRight as compose } from 'lodash'
 import { connect } from 'react-redux'
 import { addItemInCart, handleDropDownCart } from '../actions'
 

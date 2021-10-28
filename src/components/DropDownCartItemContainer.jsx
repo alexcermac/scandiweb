@@ -28,32 +28,6 @@ const Price = styled.div`
     }
 `
 
-const AttributesContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-
-const OptionContainer = styled.div`
-    margin-bottom: 10px;
-    padding: 0;
-    p {
-        margin: 0;
-    }
-`
-
-const Option = styled.div`
-    min-width: 24px;
-    max-width: 50px;
-    height: 24px;
-    border: 1px solid #1D1F22;
-    font-family: sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`
-
 const Quantity = styled.div`
     width: 20%;
     display: flex;
@@ -160,20 +134,6 @@ class DropDownCartItemContainer extends React.Component {
                             }
                         })}
                     </Price>
-                    <AttributesContainer>
-                        {product.options.map((option, index) => {
-                            return (
-                                <OptionContainer key={index}>
-                                    <p>{option.title}</p>
-                                    <Option>
-                                        {option.title !== "Color" ? <p>{option.value}</p>
-                                        : <div style={{ backgroundColor: option.value.toString(), width: "20px", height: "20px", margin: 0 }}></div>
-                                        }
-                                    </Option>
-                                </OptionContainer>
-                            )
-                        })}
-                    </AttributesContainer>
                 </Details>
                 <Quantity>
                     <Button onClick={() => this.handleQuantity(product, "plus")}>+</Button>
