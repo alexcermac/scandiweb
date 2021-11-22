@@ -1,9 +1,12 @@
-import { ADD_ITEM_TO_CART, CHANGE_PRODUCT_QUANTITY, HANDLE_DROPDOWN_CART, HANDLE_CURRENCY } from "../constants/action-types"
+import { ADD_ITEM_TO_CART, CHANGE_PRODUCT_QUANTITY, HANDLE_DROPDOWN_CART, HANDLE_CURRENCY, HANDLE_CART_ITEMS_QUANTITY, HANDLE_DROPDOWN_CURRENCIES } from "../constants/action-types"
 
 const initialState = {
     products: [],
     dropDownCart: false,
-    currency: "USD"
+    currency: "USD",
+    cartItemsQuantity: 0,
+    dropDownCurrencies: false,
+    currencySymbol: "$"
 }
 
 function rootReducer(state = initialState, action) {
@@ -31,6 +34,7 @@ function rootReducer(state = initialState, action) {
                     }
                     return product
                 }
+                return product
             })
             if(exist) {
                 return Object.assign({}, state, {
@@ -41,12 +45,11 @@ function rootReducer(state = initialState, action) {
                     products: state.products.concat(action.payload)
                 })
             }
-            break
         case CHANGE_PRODUCT_QUANTITY:
             state.products.map(product => {
                 if(action.payload.id === product.id) {
-                    if(JSON.stringify(product.options) == JSON.stringify(action.payload.options)) {
-                        if(action.payload.quantityDirection === "plus") {
+                    if(JSON.stringify(product.options) === JSON.stringify(action.payload.options)) {
+                        if(action.payload.quantityDirection === "add") {
                             product.quantity++
                         } else if(product.quantity > 1) {
                             product.quantity--
@@ -57,20 +60,38 @@ function rootReducer(state = initialState, action) {
                         }
                     }
                 }
+                return product
             })
             return Object.assign({}, state, {
                 products: state.products
             })
-            break
         case HANDLE_DROPDOWN_CART:
             return Object.assign({}, state, {
                 dropDownCart: !state.dropDownCart
             })
-            break
         case HANDLE_CURRENCY:
             return Object.assign({}, state, {
-                currency: action.payload
+                currency: action.payload.currency,
+                currencySymbol: action.payload.symbol
             })
+        case HANDLE_CART_ITEMS_QUANTITY:
+            if(action.payload === "add")
+                state.cartItemsQuantity++
+            else
+                state.cartItemsQuantity--
+            return Object.assign({}, state, {
+                cartItemsQuantity: state.cartItemsQuantity
+            })
+        case HANDLE_DROPDOWN_CURRENCIES:
+            if(state.dropDownCurrencies) {
+                return Object.assign({}, state, {
+                    dropDownCurrencies: false
+                })
+            } else {
+                return Object.assign({}, state, {
+                    dropDownCurrencies: true
+                })
+            }
         default:
             break
     }

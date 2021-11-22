@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { handleDropDownCart } from '../actions'
-import CartItemContainer from '../components/CartItemContainer'
+import CartItem from '../components/CartItem'
 
 const Container = styled.div`
 
@@ -15,17 +15,6 @@ const Wrapper = styled.div`
 
 const Title = styled.h1`
     margin: 80px 0;
-`
-
-const CartItem = styled.div`
-    margin-bottom: 40px;
-`
-
-const BreakLine = styled.div`
-    height: 1px;
-    width: 100%;
-    background-color: #E5E5E5;
-    margin: 20px 0;
 `
 
 const mapStateToProps = state => {
@@ -42,10 +31,6 @@ const mapDispatchToProps = dispatch => {
 }
 
 class CartDetails extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
     componentDidMount() {
         if(this.props.dropDownCart) {
             this.props.handleDropDownCart()
@@ -56,10 +41,11 @@ class CartDetails extends React.Component {
         return(
             this.props.products.map((product, index) => {
                 return (
-                    <CartItem key={index}>
-                        <BreakLine/>
-                        <CartItemContainer product={product}/>
-                    </CartItem>
+                    <CartItem
+                        key={index}
+                        product={product}
+                        index={index}
+                    />
                 )
             })
         )
@@ -70,7 +56,7 @@ class CartDetails extends React.Component {
             <Container>
                 <Wrapper>
                     <Title>CART</Title>
-                    { this.displayProducts() }
+                    {this.displayProducts()}
                 </Wrapper>
             </Container>
         )

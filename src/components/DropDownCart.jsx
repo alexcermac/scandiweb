@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { handleDropDownCart } from '../actions'
 import DropDownCartItemContainer from './DropDownCartItemContainer'
+import DropDownCartTitle from './DropDownCartTitle'
+import DropDownCartTotalPrice from './DropDownCartTotalPrice'
 
 const Container = styled.div`
     position: fixed;
@@ -14,7 +16,6 @@ const Container = styled.div`
     right: 0;
     background: #39374838;
     z-index: 100;
-    overflow-y: scroll;
 `
 
 const WrapperContainer = styled.div`
@@ -29,14 +30,8 @@ const Wrapper = styled.div`
     right: 0;
     width: 325px;
     background: #fff;
-    
-`
-
-const Title = styled.div`
-    margin: 8px 16px;
-    h4 {
-        font-weight: 500;
-    }
+    max-height: 85vh;
+    overflow-y: auto;
 `
 
 const Buttons = styled.div`
@@ -73,12 +68,6 @@ const CheckOut = styled.button`
     }
 `
 
-const TotalPrice = styled.div`
-    margin: 0 17px;
-    display: flex;
-    justify-content: space-between;
-`
-
 const mapStateToProps = state => {
     return {
         products: state.products,
@@ -93,16 +82,25 @@ const mapDispatchToProps = dispatch => {
 }
 
 class DropDownCart extends React.Component {
-    constructor(props) {
-        super(props)
-    }
+    container = React.createRef();
 
     componentDidMount() {    
+        document.addEventListener("mousedown", this.handleClickOutside);
         document.body.style.overflow = 'hidden';
     }
       
     componentWillUnmount() {
+        document.removeEventListener("mousedown", this.handleClickOutside);
         document.body.style.overflow = 'unset';
+    }
+
+    handleClickOutside = (event) => {
+        if (
+          this.container.current &&
+          !this.container.current.contains(event.target)
+        ) {
+            this.props.handleDropDownCart()
+        }
     }
 
     handleForceUpdate() {
@@ -113,24 +111,13 @@ class DropDownCart extends React.Component {
         return(
             this.props.products.map((product, index) => {
                 return (
-                    <DropDownCartItemContainer key={index} product={product} handleForceUpdate={() => this.handleForceUpdate()}/>
+                    <DropDownCartItemContainer
+                        key={index} 
+                        product={product} 
+                        handleForceUpdate={() => this.handleForceUpdate()}
+                    />
                 )
             })
-        )
-    }
-
-    displayTotalPrice(products) {
-        let totalPrice = 0
-        products.map(product => {
-            product.prices.map(price => {
-                if(price.currency === this.props.currency) {
-                    totalPrice = totalPrice + price.amount * product.quantity
-                }
-                
-            })
-        })
-        return (
-            <h4>{Math.round(totalPrice * 100) / 100} {this.props.currency}</h4>
         )
     }
     
@@ -139,18 +126,15 @@ class DropDownCart extends React.Component {
         
         return (
             <Container>
-                <WrapperContainer>
+                <WrapperContainer className="container" ref={this.container}>
                     <Wrapper>
-                        <Title>
-                            <h4><strong>My bag</strong>, {products.length > 0 ? products.length : 0} items</h4>
-                        </Title>
-                        { this.displayProducts() }
-                        <TotalPrice>
-                            <h4>Total:</h4>
-                            { this.displayTotalPrice(products) }
-                        </TotalPrice>
+                        <DropDownCartTitle productsLength={products.length}/>
+                        {this.displayProducts()}
+                        <DropDownCartTotalPrice />
                         <Buttons>
-                            <Link to="/cart" ><ViewBag>VIEW BAG</ViewBag></Link>
+                            <Link to="/cart" >
+                                <ViewBag>VIEW BAG</ViewBag>
+                            </Link>
                             <CheckOut>CHECK OUT</CheckOut>
                         </Buttons>
                     </Wrapper>
