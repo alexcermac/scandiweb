@@ -20,6 +20,9 @@ const Container = styled.div`
         font-family: 'Raleway', sans-serif;
         font-weight: 500;
         margin: 0;
+        /* :hover {
+            background: #a7a7a7;
+        } */
     }
 `
 
