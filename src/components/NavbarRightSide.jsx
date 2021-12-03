@@ -1,8 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { graphql } from 'react-apollo'
-import { LOAD_CURRENCIES } from '../GraphQL/Queries'
-import { flowRight as compose } from 'lodash'
 import { connect } from 'react-redux'
 import { handleDropDownCart, handleCurrency } from '../actions'
 import DropDownCart from './DropDownCart'
@@ -87,7 +84,5 @@ class NavbarRightSide extends React.Component {
     }
 }
 
-export default compose(
-    graphql(LOAD_CURRENCIES),
-    connect(mapStateToProps, mapDispatchToProps)
-)(NavbarRightSide)
+export default connect(mapStateToProps, mapDispatchToProps)
+(NavbarRightSide)

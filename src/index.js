@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import {
+    ApolloProvider,
     ApolloClient,
     InMemoryCache,
     HttpLink,
     from
 } from "@apollo/client"
-import { ApolloProvider } from 'react-apollo'
 import { onError } from '@apollo/client/link/error'
 import { Provider } from 'react-redux'
 import store from './store'

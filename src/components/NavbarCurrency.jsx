@@ -1,9 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import 'font-awesome/css/font-awesome.min.css'
-import { graphql } from 'react-apollo'
 import { LOAD_CURRENCIES } from '../GraphQL/Queries'
-import { flowRight as compose } from 'lodash'
+import { Query } from '@apollo/react-components'
 import { connect } from 'react-redux'
 import { handleCurrency, handleDropDownCurrencies } from '../actions'
 import currenciesArray from '../data/currenciesArray' // this is needed just for finding the symbols of every currency from graphql
@@ -80,10 +79,10 @@ class NavbarCurrency extends React.Component {
         this.props.handleCurrency({ currency: currency, symbol: symbol })
     }
 
-    displayCurrencies() {
+    displayCurrencies(loading, data) {
         const currArray = []
-        if(!this.props.data.loading) {
-            this.props.data.currencies.map((currency, index) => {
+        if(!loading) {
+            data.currencies.map((currency, index) => {
                 currArray.push(
                     <Currency
                         key={index}
@@ -101,14 +100,18 @@ class NavbarCurrency extends React.Component {
 
     render() {
         return (
-            <Container className="container" ref={this.container}>
-                {this.displayCurrencies()}
-            </Container>
+            <Query query={LOAD_CURRENCIES}>
+            {({ loading, error, data }) => {
+                return(
+                <Container className="container" ref={this.container}>
+                    {this.displayCurrencies(loading, data)}
+                </Container>
+                )
+            }}
+            </Query>
         )
     }
 }
 
-export default compose(
-    graphql(LOAD_CURRENCIES),
-    connect(mapStateToProps, mapDispatchToProps)
-)(NavbarCurrency)
+export default connect(mapStateToProps, mapDispatchToProps)
+(NavbarCurrency)

@@ -1,8 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { graphql } from 'react-apollo'
-import { LOAD_CURRENCIES } from '../GraphQL/Queries'
-import { flowRight as compose } from 'lodash'
 import { connect } from 'react-redux'
 import { handleDropDownCurrencies } from '../actions'
 import NavbarCurrency from './NavbarCurrency'
@@ -20,9 +17,6 @@ const Container = styled.div`
         font-family: 'Raleway', sans-serif;
         font-weight: 500;
         margin: 0;
-        /* :hover {
-            background: #a7a7a7;
-        } */
     }
 `
 
@@ -60,7 +54,7 @@ class NavbarRightSideDropdownCurrencies extends React.Component {
 
     dispalyNavbarCurrency() {
         if(this.props.dropDownCurrencies) {
-            return <NavbarCurrency loading={this.props.data.loading} />
+            return <NavbarCurrency />
         }
     }
 
@@ -79,7 +73,5 @@ class NavbarRightSideDropdownCurrencies extends React.Component {
     }
 }
 
-export default compose(
-    graphql(LOAD_CURRENCIES),
-    connect(mapStateToProps, mapDispatchToProps)
-)(NavbarRightSideDropdownCurrencies)
+export default connect(mapStateToProps, mapDispatchToProps)
+(NavbarRightSideDropdownCurrencies)

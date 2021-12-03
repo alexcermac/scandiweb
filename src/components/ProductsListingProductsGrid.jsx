@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { graphql } from 'react-apollo'
-import { LOAD_PRODUCTS } from '../GraphQL/Queries'
+import { LOAD_ALL_PRODUCTS, LOAD_PRODUCTS } from '../GraphQL/Queries'
+import { Query } from '@apollo/react-components'
 import ProductsListingProductCard from './ProductsListingProductCard'
 
 const Container = styled.div`
@@ -12,41 +12,52 @@ const Container = styled.div`
 `
 
 class ProductsListingProductsGrid extends React.Component {
-    displayProducts() {
-        const data = this.props.data
-        if(data.loading) {
+    displayProducts(loading, data) {
+        if(loading)
             return(<div>Loading products...</div>)
-        } else {
-            return (
-                data.category.products.map((product, index) => {
-                    return (
-                        <ProductsListingProductCard
-                            key={index}
-                            product={product}
-                        />
-                    )
-                })
-            )
+        return (
+            data.category.products.map((product, index) => {
+                return (
+                    <ProductsListingProductCard
+                        key={index}
+                        product={product}
+                    />
+                )
+            })
+        )
+    }
+
+    chooseQuery() {
+        if(this.props.category === "all")
+            return LOAD_ALL_PRODUCTS
+        return LOAD_PRODUCTS
+    }
+
+    chooseQueryVariables() {
+        const category = {
+            title: this.props.category
         }
+        if(this.props.category === "all")
+            return {}
+        return { category }
     }
 
     render() {
         return(
-            <Container>
-                {this.displayProducts()}
-            </Container>
+            <Query
+                query={this.chooseQuery()}
+                variables={this.chooseQueryVariables()}
+            >
+            {({ loading, error, data }) => {
+                return (
+                <Container>
+                    {this.displayProducts(loading, data)}
+                </Container>
+                )
+            }}
+            </Query>
         )
     }
 }
 
-export default graphql(LOAD_PRODUCTS, {
-    options: (props) => {
-        return {
-            variables: {
-                category: {
-                    title: props.category
-                }
-            }
-        }
-    }
-})(ProductsListingProductsGrid)
+export default ProductsListingProductsGrid

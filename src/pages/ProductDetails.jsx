@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { graphql } from 'react-apollo'
+import { Query } from '@apollo/react-components'
 import { LOAD_PRODUCT_DETAILS } from '../GraphQL/Queries'
 import ProductsDetailsImage from '../components/ProductDetailsImage'
 import ProductDetailsPrimaryImage from '../components/ProductDetailsPrimaryImage'
@@ -37,10 +37,9 @@ class ProductDetails extends React.Component {
         })
     }
 
-    displayGallery() {
-        const product = this.props.data.product
+    displayGallery(data) {
         return(
-            product.gallery.map((imageURL, index) => {
+            data.product.gallery.map((imageURL, index) => {
                 return(
                     <ProductsDetailsImage
                         key={index}
@@ -54,14 +53,16 @@ class ProductDetails extends React.Component {
     }
 
     render() {
-        const data = this.props.data
+        const id = this.props.match.params.id
         return (
-            <>
-            {!data.loading && 
+            <Query query={LOAD_PRODUCT_DETAILS} variables={{ id }}>
+            {({ loading, error, data }) => {
+                if(loading) return <h3>Loading...</h3>
+                return (
                 <Container>
                     <Wrapper>
                         <Gallery>
-                            {this.displayGallery()}
+                            {this.displayGallery(data)}
                         </Gallery>
                         <ProductDetailsPrimaryImage
                             primaryImage={this.state.primaryImage}
@@ -72,18 +73,20 @@ class ProductDetails extends React.Component {
                         />
                     </Wrapper>
                 </Container>
-            }
-            </>
+                )
+            }}
+            </Query>
         )
     }
 }
 
-export default graphql(LOAD_PRODUCT_DETAILS, {
-    options: (props) => {
-        return {
-            variables: {
-                id: props.match.params.id
-            }
-        }
-    }
-})(ProductDetails)
+// export default graphql(LOAD_PRODUCT_DETAILS, {
+//     options: (props) => {
+//         return {
+//             variables: {
+//                 id: props.match.params.id
+//             }
+//         }
+//     }
+// })(ProductDetails)
+export default ProductDetails
